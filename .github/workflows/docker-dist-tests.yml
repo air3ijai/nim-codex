@@ -25,6 +25,10 @@ on:
         default: false
 
 
+env:
+  run_release_tests: false
+
+
 jobs:
   compute-inputs:
     name: Compute inputs
@@ -35,16 +39,7 @@ jobs:
       - name: Compute inputs
         id: compute
         run: |
-          echo "run_release_tests=${{ inputs.run_release_tests }}" >> "$GITHUB_OUTPUT"
-
-  show:
-    name: Show
-    runs-on: ubuntu-latest
-    needs: compute-inputs
-    steps:
-      - name: Show
-        run: |
-          echo "run_release_tests=${{ needs.compute-inputs.outputs.run_release_tests }}"
+          [[ -n "${{ inputs.run_release_tests }}" ]] && echo "run_release_tests=${{ inputs.run_release_tests }}" >>"$GITHUB_ENV" || echo "run_release_tests=${{ env.run_release_tests }}" >>"$GITHUB_ENV"
 
   build-and-push:
     name: Build and Push
