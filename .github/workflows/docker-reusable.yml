@@ -232,12 +232,13 @@ jobs:
     needs: publish
     outputs:
       codexdockerimage: ${{ steps.compute.outputs.codexdockerimage }}
-      workflow_source: ${{ env.TESTS_SOURCE }}
+      workflow_source: ${{ steps.compute.outputs.workflow_source }}
     steps:
       - name: Compute Tests inputs
         id: compute
         run: |
           echo "codexdockerimage=${{ inputs.docker_repo }}:${{ needs.publish.outputs.version }}" >> "$GITHUB_OUTPUT"
+          echo "workflow_source=${{ env.TESTS_SOURCE }}" >> "$GITHUB_OUTPUT"
 
 
   # Compute Continuous Tests inputs
