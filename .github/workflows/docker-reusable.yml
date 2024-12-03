@@ -98,7 +98,7 @@ jobs:
           - target:
               os: linux
               arch: arm64
-            builder: buildjet-4vcpu-ubuntu-2204-arm
+            builder: buildjet-8vcpu-ubuntu-2204-arm
 
     name: Build ${{ matrix.target.os }}/${{ matrix.target.arch }}
     runs-on: ${{ matrix.builder }}
@@ -106,29 +106,24 @@ jobs:
       PLATFORM: ${{ format('{0}/{1}', 'linux', matrix.target.arch) }}
     steps:
       - name: Checkout
-        if: false
         uses: actions/checkout@v4
 
       - name: Docker - Meta
-        if: false
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.DOCKER_REPO }}
 
       - name: Docker - Set up Buildx
-        if: false
         uses: docker/setup-buildx-action@v3
 
       - name: Docker - Login to Docker Hub
-        if: false
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Docker - Build and Push by digest
-        if: false
         id: build
         uses: docker/build-push-action@v5
         with:
@@ -144,14 +139,12 @@ jobs:
           outputs: type=image,name=${{ env.DOCKER_REPO }},push-by-digest=true,name-canonical=true,push=true
 
       - name: Docker - Export digest
-        if: false
         run: |
           mkdir -p /tmp/digests
           digest="${{ steps.build.outputs.digest }}"
           touch "/tmp/digests/${digest#sha256:}"
 
       - name: Docker - Upload digest
-        if: false
         uses: actions/upload-artifact@v4
         with:
           name: digests-${{ matrix.target.arch }}
@@ -169,7 +162,6 @@ jobs:
     needs: build
     steps:
       - name: Docker - Variables
-        if: false
         run: |
           # Adjust custom suffix when set and
           if [[ -n "${{ env.TAG_SUFFIX }}" ]]; then
@@ -193,7 +185,6 @@ jobs:
           fi
 
       - name: Docker - Download digests
-        if: false
         uses: actions/download-artifact@v4
         with:
           pattern: digests-*
@@ -201,11 +192,9 @@ jobs:
           path: /tmp/digests
 
       - name: Docker - Set up Buildx
-        if: false
         uses: docker/setup-buildx-action@v3
 
       - name: Docker - Meta
-        if: false
         id: meta
         uses: docker/metadata-action@v5
         with:
@@ -219,21 +208,18 @@ jobs:
             type=sha,enable=${{ env.TAG_SHA }}
 
       - name: Docker - Login to Docker Hub
-        if: false
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Docker - Create manifest list and push
-        if: false
         working-directory: /tmp/digests
         run: |
           docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
             $(printf '${{ env.DOCKER_REPO }}@sha256:%s ' *)
 
       - name: Docker - Inspect image
-        if: false
         run: |
           docker buildx imagetools inspect ${{ env.DOCKER_REPO }}:${{ steps.meta.outputs.version }}
 
@@ -251,8 +237,7 @@ jobs:
       - name: Compute Tests inputs
         id: compute
         run: |
-          # echo "codexdockerimage=${{ inputs.docker_repo }}:${{ needs.publish.outputs.version }}" >> "$GITHUB_OUTPUT"
-          echo "codexdockerimage=codexstorage/nim-codex:sha-ff0e0ee-dist-tests" >> "$GITHUB_OUTPUT"
+          echo "codexdockerimage=${{ inputs.docker_repo }}:${{ needs.publish.outputs.version }}" >> "$GITHUB_OUTPUT"
 
 
   # Compute Continuous Tests inputs
