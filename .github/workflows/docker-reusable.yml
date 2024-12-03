@@ -57,7 +57,7 @@ on:
       run_release_tests:
         description: Run Release tests
         required: false
-        type: boolean
+        type: string
         default: false
 
 
