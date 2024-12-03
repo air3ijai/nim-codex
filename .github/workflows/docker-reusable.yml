@@ -231,7 +231,7 @@ jobs:
     name: Compute Tests inputs
     if: ${{ inputs.continuous_tests_list != '' || inputs.run_release_tests == true }}
     runs-on: ubuntu-latest
-    needs: publish
+    # needs: publish
     outputs:
       codexdockerimage: ${{ steps.compute.outputs.codexdockerimage }}
       workflow_source: ${{ env.TESTS_SOURCE }}
