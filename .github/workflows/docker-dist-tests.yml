@@ -39,7 +39,7 @@ jobs:
       - name: Compute inputs
         id: compute
         run: |
-          [[ -n "${{ inputs.run_release_tests }}" ]] && echo "run_release_tests=${{ inputs.run_release_tests }}" >>"$GITHUB_ENV" || echo "run_release_tests=${{ env.run_release_tests }}" >>"$GITHUB_ENV"
+          [[ -n "${{ inputs.run_release_tests }}" ]] && echo "run_release_tests=${{ inputs.run_release_tests }}" >>"$GITHUB_OUTPUT" || echo "run_release_tests=${{ env.run_release_tests }}" >>"$GITHUB_OUTPUT"
 
   build-and-push:
     name: Build and Push
