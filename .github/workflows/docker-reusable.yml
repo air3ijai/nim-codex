@@ -286,7 +286,7 @@ jobs:
   run-release-tests:
     name: Run Release Tests
     needs: [compute-tests-inputs]
-    if: inputs.run_release_tests
+    if: ${{ inputs.run_release_tests == 'true' }}
     uses: codex-storage/cs-codex-dist-tests/.github/workflows/run-release-tests.yaml@master
     with:
       codexdockerimage: ${{ needs.compute-tests-inputs.outputs.codexdockerimage }}
