@@ -30,9 +30,12 @@ jobs:
     name: Compute inputs
     runs-on: ubuntu-latest
     outputs:
-      run_release_tests: ${{ inputs.run_release_tests }}
+      run_release_tests: ${{ steps.compute.outputs.run_release_tests }}
     steps:
-      - run: echo
+      - name: Compute inputs
+        id: compute
+        run: |
+          echo "run_release_tests=${{ inputs.run_release_tests }}" >> "$GITHUB_OUTPUT"
 
   build-and-push:
     name: Build and Push
