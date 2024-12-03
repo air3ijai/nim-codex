@@ -46,8 +46,6 @@ jobs:
   build-and-push:
     name: Build and Push
     # needs: compute-inputs
-    env:
-      run_release_tests: ${{ inputs.run_release_tests }}
     uses: ./.github/workflows/docker-reusable.yml
     with:
       nimflags: '-d:disableMarchNative -d:codex_enable_api_debug_peers=true -d:codex_enable_proof_failures=true -d:codex_enable_log_counter=true -d:verify_circuit=true'
